@@ -32,5 +32,5 @@ post '/upload' do
 
   status 200
   headers 'X-Gyazo-Id' => '000'
-  body "https://#{ENV['AWS_S3_BUCKET']}/#{s3key}"
+  body "http://#{ENV['AWS_S3_BUCKET']}/#{s3key}"
 end
