@@ -1,5 +1,5 @@
+.git
 app/.bundle
 app/vendor/bundle
-
+env.sample
 .env
-data/

@@ -10,7 +10,7 @@ working_directory app_path
 pid "#{app_path}/tmp/unicorn.pid"
 
 # listen
-listen ENV['SINATRA_UNIX_SOCKET']
+listen ENV['SINATRA_UNIX_SOCKET'] || "0.0.0.0:8080"
 
 # logging
 stderr_path "#{app_path}/log/unicorn.stderr.log"

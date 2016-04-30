@@ -1,4 +1,4 @@
-FROM cnosuke/ruby23-base
+FROM ruby:2.3
 MAINTAINER cnosuke
 
 RUN mkdir -p /app /data
