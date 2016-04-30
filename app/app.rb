@@ -4,8 +4,6 @@ require "sinatra/reloader" if development?
 require 'digest/md5'
 require './s3_uploader'
 
-HOST = 'img.cnosuke.com'
-
 EXT_WHITELIST = %w(
   png
   gif
@@ -16,16 +14,10 @@ error 403 do
   "Access forbidden\n"
 end
 
-def authorize(key)
-  ENV['AUTHORIZE_KEYS'].gsub(/\s/,'').split(',').include?(key)
-end
-
-get '/' do
-  'index'
-end
-
 post '/upload' do
-  return 403 unless authorize params['key']
+  token = request.env['HTTP_AUTHORIZATION']
+  return 403 unless token == 'Bearer ' + ENV['BEARER_TOKEN']
+
   id = params['id']
   image_file = params['imagedata'][:tempfile]
   hash = Digest::MD5.hexdigest(image_file.read)
@@ -35,10 +27,10 @@ post '/upload' do
   exit unless EXT_WHITELIST.include?(ext)
 
   fname = "#{hash}.#{ext}"
-  s3key = "d/#{fname}"
+  s3key = "#{fname}"
   S3Uploader.put(s3key, image_file)
 
   status 200
   headers 'X-Gyazo-Id' => '000'
-  body "https://#{HOST}/#{s3key}"
+  body "https://#{ENV['AWS_S3_BUCKET']}/#{s3key}"
 end
